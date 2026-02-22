@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "URD4xhcGtXc=",
+  "dgSpecHash": "zsoDQg9hgo8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\sebas\\Downloads\\Confirmation Peralta\\ForewayApp\\ForewayApp.csproj",
+  "projectFilePath": "C:\\Users\\sebas\\OneDrive\\Documents\\GitHub\\ConfirmationAndBooking\\ForewayApp\\ForewayApp.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\sebas\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.24\\microsoft.netcore.app.ref.8.0.24.nupkg.sha512",
     "C:\\Users\\sebas\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.24\\microsoft.windowsdesktop.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\sebas\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.24\\microsoft.netcore.app.ref.8.0.24.nupkg.sha512",
     "C:\\Users\\sebas\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.24\\microsoft.aspnetcore.app.ref.8.0.24.nupkg.sha512",
     "C:\\Users\\sebas\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.24\\microsoft.netcore.app.host.win-x64.8.0.24.nupkg.sha512"
   ],
