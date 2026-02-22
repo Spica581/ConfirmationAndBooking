@@ -1,0 +1,186 @@
+@page
+@model ForewayApp.Pages.FlightsModel
+@{
+    ViewData["Title"] = "Flight Results";
+}
+
+<section class="section container">
+    <h1 class="h1 mb-8">Your Flight Journey</h1>
+
+    <!-- Interactive Map: SFO → NRT -->
+    <div id="map" class="mb-8"></div>
+
+    <!-- Search Card -->
+    <div class="search-card mb-8">
+        <form method="get" class="form-grid form-grid-5">
+            <div>
+                <label class="label">From</label>
+                <input type="text" name="From" value="@Model.Search.From" class="input" />
+            </div>
+            <div>
+                <label class="label">To</label>
+                <input type="text" name="To" value="@Model.Search.To" class="input" />
+            </div>
+            <div>
+                <label class="label">Depart</label>
+                <input type="date" name="Depart" value="@Model.Search.Depart.ToString("yyyy-MM-dd")" class="input" />
+            </div>
+            <div>
+                <label class="label">Return</label>
+                <input type="date" name="Return" value="@Model.Search.Return.ToString("yyyy-MM-dd")" class="input" />
+            </div>
+            <div>
+                <label class="label">Passengers</label>
+                <div class="flex space-x-4">
+                    <select name="Adults" class="input" style="width:50%;">
+                        @for (int i = 1; i <= 9; i++)
+                        {
+                            <option value="@i" selected="@(Model.Search.Adults == i ? "selected" : null)">
+                                @i Adult@(i > 1 ? "s" : "")
+                            </option>
+                        }
+                    </select>
+                    <select name="Children" class="input" style="width:50%;">
+                        @for (int i = 0; i <= 9; i++)
+                        {
+                            <option value="@i" selected="@(Model.Search.Children == i ? "selected" : null)">
+                                @i Child@(i != 1 ? "ren" : "")
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-items-end">
+                <button type="submit" class="btn-primary btn-full">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex space-x-4 mb-8 flex-wrap">
+        <select class="input"><option>Max price</option><option>Under $700</option><option>Under $1000</option></select>
+        <select class="input"><option>Stops</option><option>Non-stop</option><option>1 stop</option></select>
+        <select class="input"><option>Times</option><option>Morning</option><option>Evening</option></select>
+        <select class="input"><option>Airlines</option><option>Hawaiian Airlines</option><option>Japan Airlines</option></select>
+        <select class="input"><option>Seat class</option><option>Economy</option><option>Business</option></select>
+    </div>
+
+    <div class="grid grid-md-3 grid-gap-8">
+        <!-- Flight List -->
+        <div class="md-col-span-2 space-y-6">
+            <h2 class="h2">Available Flights</h2>
+
+            @foreach (var flight in Model.Flights)
+            {
+                <details class="card">
+                    <summary class="flex flex-justify-between flex-items-center font-bold cursor-pointer p-6">
+                        <div class="flex flex-items-center space-x-4">
+                            <!-- Airline icon placeholder (replace with real logos in wwwroot/images) -->
+                            <div style="width:50px;height:50px;background:linear-gradient(135deg,#6d28d9,#7c3aed);
+                                        border-radius:8px;display:flex;align-items:center;justify-content:center;
+                                        color:#fff;font-weight:700;font-size:0.7rem;text-align:center;padding:2px;">
+                                @flight.AirlineCode
+                            </div>
+                            <div>
+                                @flight.Airline &bull; @flight.Duration &bull;
+                                <strong>$@flight.Price.ToString("N0")</strong>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="p-6 pt-0">
+                        <p>@flight.DepartTime – @flight.ArriveTime &bull; @flight.Stops stop@(flight.Stops != 1 ? "s" : "") (@flight.StopDetail)</p>
+                        <a href="/Confirmation" class="btn-primary mt-4 inline-block">Select Seats</a>
+                    </div>
+                </details>
+            }
+
+            <button class="btn-primary btn-full mt-4">Show More Flights</button>
+        </div>
+
+        <!-- Buy Soon Sidebar -->
+        <div class="buy-soon">
+            <h3 class="h3 text-green-600">Buy Soon Alert</h3>
+            <p class="p-gray">We recommend booking soon. Prices may rise 18% in the next two weeks.</p>
+            <p class="p-gray mt-2">Foreway analyzes real-time trends for the best deals.</p>
+        </div>
+    </div>
+
+    <!-- Price Insights -->
+    <h2 class="h2 mt-8">Price Insights</h2>
+    <div class="grid grid-md-2 grid-gap-8">
+
+        <!-- Flexible Dates Heatmap -->
+        <div>
+            <h3 class="h3 mb-4">Flexible Dates Grid</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        @foreach (var dep in Model.HeatmapDepartures)
+                        {
+                            <th>@dep</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.HeatmapRows)
+                    {
+                        <tr>
+                            <td><strong>@row.ReturnDate</strong></td>
+                            @foreach (var cell in row.Cells)
+                            {
+                                <td class="@cell.CssClass">$@cell.Price.ToString("N0")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Price History Chart -->
+        <div>
+            <h3 class="h3 mb-4">Price History</h3>
+            <canvas id="priceChart" height="200"></canvas>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<script>
+    // --- Leaflet Map -------------------------------------------------------
+    (function() {
+        const map = L.map('map').setView([37.6213, -122.3790], 3);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([37.6213, -122.3790]).addTo(map).bindPopup('SFO – San Francisco');
+        L.marker([35.7647,  140.3864]).addTo(map).bindPopup('NRT – Tokyo Narita');
+        L.polyline([[37.6213, -122.3790], [35.7647, 140.3864]],
+                   {color: '#7c3aed', weight: 3, dashArray: '8,6'}).addTo(map);
+    })();
+
+    // --- Price History Chart -----------------------------------------------
+    new Chart(document.getElementById('priceChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Avg. Price (USD)',
+                data: [1000, 920, 850, 760, 710, 680],
+                borderColor: '#7c3aed',
+                backgroundColor: 'rgba(124,58,237,0.08)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#7c3aed'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+                y: { beginAtZero: false, ticks: { callback: v => '$' + v } }
+            }
+        }
+    });
+</script>
+}

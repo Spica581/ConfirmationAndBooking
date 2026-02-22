@@ -1,0 +1,58 @@
+@model ForewayApp.Models.FlightLeg
+
+@{
+    int stopCount = Model.Segments.Count - 1;
+    string stopLabel = stopCount == 0 ? "Non-Stop" : $"{stopCount}-Stop";
+}
+
+<div class="flight-card">
+    <h3>
+        @(Model.IsReturn ? "Return" : "Departure") @stopLabel
+        &nbsp;○&nbsp; @Model.Duration
+    </h3>
+
+    @for (int i = 0; i < Model.Segments.Count; i++)
+    {
+        var seg = Model.Segments[i];
+
+        <div class="flight-leg">
+            <!-- Airline info -->
+            <div class="airline-info">
+                <span class="airline-logo">Δ</span>
+                <div>
+                    <p class="font-medium">@seg.Date</p>
+                    <p>@seg.FlightNumber</p>
+                    <p>@seg.Aircraft</p>
+                </div>
+            </div>
+
+            <!-- Depart -->
+            <div class="depart text-right">
+                <time>@seg.DepartTime</time>
+                <p>@seg.DepartAirport</p>
+            </div>
+
+            <!-- Duration -->
+            <div class="duration text-center mx-4">
+                <p>@seg.FlightDuration</p>
+                <span class="text-xs">Flight Duration</span>
+                <div class="arrow">→</div>
+            </div>
+
+            <!-- Arrive -->
+            <div class="arrive">
+                <time>@seg.ArriveTime</time>
+                <p>@seg.ArriveAirport</p>
+            </div>
+        </div>
+
+        <p class="text-sm text-gray-600">RECORD LOCATOR: PENDING</p>
+        <p class="text-sm text-gray-600">Class: @seg.Class</p>
+
+        @* Show layover between segments *@
+        @if (!string.IsNullOrEmpty(Model.LayoverNote) && i < Model.Segments.Count - 1)
+        {
+            <p class="layover">@Model.LayoverNote</p>
+        }
+    }
+</div>

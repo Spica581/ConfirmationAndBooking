@@ -1,0 +1,178 @@
+@page
+@model ForewayApp.Pages.ConfirmationModel
+@{
+    ViewData["Title"] = "Booking Confirmation";
+    var b = Model.Booking;
+}
+
+<div class="confirmation-page flex lg:flex-row" style="gap:2rem;">
+
+    <!-- ================================================================
+         MAIN CONTENT
+         ================================================================ -->
+    <div class="main-content flex-1">
+
+        <!-- Pending Notice -->
+        <div class="pending-notice">
+            <div class="icon">⚠️</div>
+            <div>
+                <h3 class="font-semibold text-orange-800">Your flight is pending</h3>
+                <p class="text-sm text-gray-600">
+                    Flight availability can change quickly due to fluctuating consolidator fares.
+                    We work hard to confirm bookings fast, but sometimes the flight you chose may
+                    become unavailable. If we can't secure your ticket within 72 hours, we'll
+                    notify you by email and issue a full refund.
+                </p>
+            </div>
+        </div>
+
+        <!-- Thanks -->
+        <div class="thanks-section">
+            <h1>Thanks @b.Traveler1.FullName for choosing Foreway!</h1>
+            <div class="ticket-id">🅱 Basis Ticket ID: @b.TicketId</div>
+        </div>
+
+        <p class="text-sm text-gray-600">
+            A confirmation email will be sent to <strong>@b.ConfirmationEmail</strong>.
+            This may take up to 30 minutes. Please quote your Ticket ID when contacting support.
+            If you haven't received an email, check your spam folder.
+        </p>
+
+        <!-- Free Cancellation -->
+        <div class="cancellation">
+            <div class="icon">🌟</div>
+            <div>
+                <h3 class="font-semibold text-blue-800">Free 24-Hour Cancellation</h3>
+                <p class="text-sm text-gray-600">
+                    For a full refund, contact our support team within 24 hours of booking.
+                </p>
+            </div>
+        </div>
+
+        <!-- Flight Details -->
+        <div class="flight-details">
+            <div class="flex flex-justify-between flex-items-center">
+                <h2 class="h2" style="margin:0;">Flight Details</h2>
+                <div class="flight-status">
+                    Booking Confirmation:
+                    <span class="pending-tag">@b.Status</span>
+                </div>
+            </div>
+
+            @* ---- Outbound leg ---- *@
+            @if (b.OutboundLeg != null)
+            {
+                @await Html.PartialAsync("_FlightLeg", b.OutboundLeg)
+            }
+
+            @* ---- Return leg ---- *@
+            @if (b.ReturnLeg != null)
+            {
+                @await Html.PartialAsync("_FlightLeg", b.ReturnLeg)
+            }
+        </div>
+
+        <!-- Traveler Info -->
+        <h2 class="h2">Flight &amp; Traveler Information</h2>
+        <p class="text-sm text-gray-600">
+            If you updated your seat selection since booking, that change may not appear here.
+            Contact the airline to confirm.
+        </p>
+
+        <div class="traveler-card">
+            <h3>Traveler #1 – @b.Traveler1.FullName</h3>
+            <table>
+                <tr><td>Gender</td><td>@b.Traveler1.Gender</td></tr>
+                <tr><td>Date of Birth</td><td>@b.Traveler1.DateOfBirth</td></tr>
+                <tr><td>Phone Number</td><td>@b.Traveler1.Phone</td></tr>
+                <tr><td>Email</td><td>@b.Traveler1.Email</td></tr>
+            </table>
+        </div>
+
+        @if (b.Traveler2 != null)
+        {
+            <div class="traveler-card">
+                <h3>Traveler #2 – @b.Traveler2.FullName</h3>
+                <table>
+                    <tr><td>Gender</td><td>@b.Traveler2.Gender</td></tr>
+                    <tr><td>Date of Birth</td><td>@b.Traveler2.DateOfBirth</td></tr>
+                    <tr><td>Phone Number</td><td>@b.Traveler2.Phone</td></tr>
+                    <tr><td>Email</td><td>@b.Traveler2.Email</td></tr>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- ================================================================
+         SIDEBAR
+         ================================================================ -->
+    <aside class="sidebar lg:w-80">
+
+        <!-- Traveler 1 -->
+        <div class="traveler-sidebar">
+            <h3>Traveler #1 – @b.Traveler1.FullName</h3>
+            <table>
+                <tr><td>Gender</td><td>@b.Traveler1.Gender</td></tr>
+                <tr><td>Date of Birth</td><td>@b.Traveler1.DateOfBirth</td></tr>
+                <tr><td>Phone</td><td>@b.Traveler1.Phone</td></tr>
+                <tr><td>Email</td><td>@b.Traveler1.Email</td></tr>
+            </table>
+            <h3 class="font-semibold text-gray-800" style="margin-top:1.25rem;margin-bottom:0.5rem;">
+                LOYALTY PROGRAM
+            </h3>
+            <p>TSA Known Traveler #:</p>
+            <p>REDRESS NUMBER:</p>
+        </div>
+
+        @if (b.Traveler2 != null)
+        {
+            <div class="traveler-sidebar">
+                <h3>Traveler #2 – @b.Traveler2.FullName</h3>
+                <table>
+                    <tr><td>Gender</td><td>@b.Traveler2.Gender</td></tr>
+                    <tr><td>Date of Birth</td><td>@b.Traveler2.DateOfBirth</td></tr>
+                    <tr><td>Phone</td><td>@b.Traveler2.Phone</td></tr>
+                    <tr><td>Email</td><td>@b.Traveler2.Email</td></tr>
+                </table>
+                <h3 class="font-semibold text-gray-800" style="margin-top:1.25rem;margin-bottom:0.5rem;">
+                    LOYALTY PROGRAM
+                </h3>
+                <p>TSA Known Traveler #:</p>
+                <p>REDRESS NUMBER:</p>
+            </div>
+        }
+
+        <!-- Cost & Billing -->
+        <div class="cost-billing">
+            <h3>Cost &amp; Billing Information</h3>
+            <h4 class="font-medium mb-2" style="color:#4c1d95;">Cost Information</h4>
+            <table>
+                <tr><td>Fare</td><td></td></tr>
+                <tr><td style="padding-left:1.5rem;">Adult × @b.AdultCount</td>
+                    <td style="text-align:right;">$@b.FarePerAdult.ToString("N2")</td></tr>
+                <tr><td>Taxes and Fees</td><td></td></tr>
+                <tr><td style="padding-left:1.5rem;">Adult × @b.AdultCount</td>
+                    <td style="text-align:right;">$@b.TaxesPerAdult.ToString("N2")</td></tr>
+                <tr><td>Total</td>
+                    <td style="text-align:right;">$@b.Total.ToString("N2")</td></tr>
+            </table>
+        </div>
+
+        <!-- Policies -->
+        <div class="policies">
+            <h3>Policies, Rules &amp; Restrictions</h3>
+            <p>
+                The Philippines enforces policies that promote economic growth while protecting
+                national interests. Foreign investment is allowed in many sectors but restricted
+                in areas like land ownership. Anti-corruption, anti-money-laundering, labor, and
+                anti-discrimination regulations protect both commerce and workers.
+            </p>
+            <p style="margin-top:0.75rem;">
+                Airlines require valid photo identification at check-in (driver's license or
+                passport), plus applicable visa and health documents. Information here is
+                provided as a courtesy—verify requirements with the destination country's consul
+                before travel.
+            </p>
+        </div>
+    </aside>
+</div>
