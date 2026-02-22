@@ -1,0 +1,128 @@
+@page
+@model ForewayApp.Pages.FlightDetailsModel
+@{
+    ViewData["Title"] = "Flight Details";
+    var f = Model.Flight;
+}
+
+<div class="page-card">
+
+    <div class="page-title-bar">
+        <div class="flex items-center gap-3">
+            <a href="/Flights" class="btn btn-ghost btn-sm" aria-label="Back to search results">← Back</a>
+            <h1>Flight Details</h1>
+        </div>
+        <div class="flex gap-2">
+            <a href="/Book/Step1" class="btn btn-primary" aria-label="Book this flight">🎫 Book This Flight</a>
+            <a href="/Manage"     class="btn btn-ghost btn-sm" aria-label="Manage bookings">📂 Manage</a>
+        </div>
+    </div>
+
+    <!-- Flight headline -->
+    <div class="action-bar" style="align-items:flex-start; flex-direction:column; gap:.5rem;">
+        <div class="flex items-center gap-3 flex-wrap">
+            <div class="airline-badge" style="width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:#fff;font-weight:700;font-size:.65rem;">
+                @f.AirlineCode
+            </div>
+            <div>
+                <div class="font-bold text-dark" style="font-size:1rem;">@f.Airline</div>
+                <div class="text-xs text-gray">@f.FlightNumber · @f.Aircraft</div>
+            </div>
+            <div class="flex items-center gap-3" style="margin-left:.5rem;">
+                <div style="text-align:center;">
+                    <div class="font-bold text-purple" style="font-size:1.2rem;">@f.DepartTime</div>
+                    <div class="text-xs text-gray">@f.DepartAirport</div>
+                </div>
+                <div style="text-align:center;color:#c4b5fd;font-size:1.3rem;">——✈——</div>
+                <div style="text-align:center;">
+                    <div class="font-bold text-purple" style="font-size:1.2rem;">@f.ArriveTime</div>
+                    <div class="text-xs text-gray">@f.ArriveAirport</div>
+                </div>
+                <div class="text-xs text-gray" style="border-left:1px solid #e8e0fa;padding-left:.75rem;">
+                    <div>@f.Duration</div><div>@f.Stops stop@(f.Stops!=1?"s":"")</div>
+                </div>
+            </div>
+            <div style="margin-left:auto;" class="flex items-center gap-2">
+                <span class="font-bold text-purple" style="font-size:1.3rem;">$@f.Price.ToString("N0")</span>
+                <span class="text-xs text-gray">per person</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrollable detail area -->
+    <div class="scroll-zone">
+        <div class="detail-grid" style="margin-bottom:.75rem;">
+
+            <!-- Flight Info -->
+            <div class="detail-panel">
+                <h3>✈ Flight Information</h3>
+                <div class="info-row"><span class="info-label">Flight #</span><span>@f.FlightNumber</span></div>
+                <div class="info-row"><span class="info-label">Aircraft</span><span>@f.Aircraft</span></div>
+                <div class="info-row"><span class="info-label">Duration</span><span>@f.Duration</span></div>
+                <div class="info-row"><span class="info-label">Distance</span><span>@f.Distance miles</span></div>
+                <div class="info-row"><span class="info-label">Stops</span><span>@(f.Stops==0?"Non-stop":f.StopDetail)</span></div>
+                <div class="info-row"><span class="info-label">Class</span><span>@f.SeatClass</span></div>
+                <div class="info-row"><span class="info-label">Status</span><span style="color:#059669;font-weight:700;">On Time</span></div>
+            </div>
+
+            <!-- Pricing Breakdown -->
+            <div class="detail-panel">
+                <h3>💰 Pricing Breakdown</h3>
+                <div class="info-row"><span class="info-label">Base fare</span><span>$@f.BaseFare.ToString("N2")</span></div>
+                <div class="info-row"><span class="info-label">Taxes &amp; fees</span><span>$@f.Taxes.ToString("N2")</span></div>
+                <div class="info-row"><span class="info-label">Seat fee</span><span>$@f.SeatFee.ToString("N2")</span></div>
+                <div class="info-row"><span class="info-label">Baggage (1×23kg)</span><span>Included</span></div>
+                <div class="info-row" style="font-weight:700;color:#4c1d95;border-top:2px solid #c4b5fd;padding-top:.35rem;"><span>Total</span><span>$@f.Price.ToString("N2")</span></div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="detail-panel">
+                <h3>🛎 Amenities</h3>
+                @foreach(var a in f.Amenities){
+                    <div class="info-row"><span class="info-label">@a.Key</span><span>@a.Value</span></div>
+                }
+            </div>
+
+            <!-- Seat Map -->
+            <div class="detail-panel">
+                <h3>💺 Seat Map — Click to Select</h3>
+                <div class="flex gap-3 mb-2" style="flex-wrap:wrap;">
+                    <span class="text-xs" style="display:flex;align-items:center;gap:.3rem;"><span style="width:12px;height:12px;background:#d1fae5;border-radius:2px;display:inline-block;"></span>Available</span>
+                    <span class="text-xs" style="display:flex;align-items:center;gap:.3rem;"><span style="width:12px;height:12px;background:#fee2e2;border-radius:2px;display:inline-block;"></span>Taken</span>
+                    <span class="text-xs" style="display:flex;align-items:center;gap:.3rem;"><span style="width:12px;height:12px;background:#6d28d9;border-radius:2px;display:inline-block;"></span>Selected</span>
+                </div>
+                <div class="seat-grid" id="seatGrid" role="group" aria-label="Seat map">
+                    @foreach(var seat in Model.Seats){
+                        if(seat == "aisle"){
+                            <div class="seat aisle"></div>
+                        } else {
+                            var cls = Model.TakenSeats.Contains(seat) ? "taken" : "avail";
+                            <div class="seat @cls" onclick="toggleSeat(this,'@seat')" title="Seat @seat" aria-label="Seat @seat, @cls">@seat</div>
+                        }
+                    }
+                </div>
+                <div class="text-xs text-gray mt-2" id="selectedSeat">No seat selected</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="flex gap-3 justify-center" style="padding:.5rem 0;">
+            <a href="/Book/Step1" class="btn btn-primary btn-lg" aria-label="Proceed to booking">🎫 Book This Flight — $@f.Price.ToString("N0")</a>
+            <a href="/Flights"    class="btn btn-outline btn-lg" aria-label="Search other flights">← Other Flights</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let selected = null;
+    function toggleSeat(el, id) {
+        if (el.classList.contains('taken')) return;
+        if (selected) { selected.classList.remove('sel'); selected.classList.add('avail'); }
+        if (selected === el) { selected = null; document.getElementById('selectedSeat').textContent = 'No seat selected'; return; }
+        el.classList.remove('avail'); el.classList.add('sel');
+        selected = el;
+        document.getElementById('selectedSeat').textContent = 'Selected: Seat ' + id;
+    }
+</script>
+}

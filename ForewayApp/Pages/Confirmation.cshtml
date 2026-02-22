@@ -5,174 +5,200 @@
     var b = Model.Booking;
 }
 
-<div class="confirmation-page flex lg:flex-row" style="gap:2rem;">
+<div class="page-card">
 
-    <!-- ================================================================
-         MAIN CONTENT
-         ================================================================ -->
-    <div class="main-content flex-1">
-
-        <!-- Pending Notice -->
-        <div class="pending-notice">
-            <div class="icon">⚠️</div>
-            <div>
-                <h3 class="font-semibold text-orange-800">Your flight is pending</h3>
-                <p class="text-sm text-gray-600">
-                    Flight availability can change quickly due to fluctuating consolidator fares.
-                    We work hard to confirm bookings fast, but sometimes the flight you chose may
-                    become unavailable. If we can't secure your ticket within 72 hours, we'll
-                    notify you by email and issue a full refund.
-                </p>
-            </div>
+    <div class="page-title-bar">
+        <div class="flex items-center gap-3">
+            <h1>🎉 Booking Confirmation</h1>
+            <span class="badge badge-pending">@b.Status</span>
         </div>
-
-        <!-- Thanks -->
-        <div class="thanks-section">
-            <h1>Thanks @b.Traveler1.FullName for choosing Foreway!</h1>
-            <div class="ticket-id">🅱 Basis Ticket ID: @b.TicketId</div>
+        <div class="flex gap-2">
+            <a href="/Manage"  class="btn btn-ghost btn-sm"  aria-label="View all bookings">📂 All Bookings</a>
+            <a href="/Flights" class="btn btn-outline btn-sm" aria-label="Search more flights">🔍 New Search</a>
         </div>
+    </div>
 
-        <p class="text-sm text-gray-600">
-            A confirmation email will be sent to <strong>@b.ConfirmationEmail</strong>.
-            This may take up to 30 minutes. Please quote your Ticket ID when contacting support.
-            If you haven't received an email, check your spam folder.
-        </p>
+    <!-- Content area -->
+    <div style="flex:1;display:grid;grid-template-columns:1fr 320px;gap:0;overflow:hidden;min-height:0;" class="confirm-layout">
 
-        <!-- Free Cancellation -->
-        <div class="cancellation">
-            <div class="icon">🌟</div>
-            <div>
-                <h3 class="font-semibold text-blue-800">Free 24-Hour Cancellation</h3>
-                <p class="text-sm text-gray-600">
-                    For a full refund, contact our support team within 24 hours of booking.
-                </p>
-            </div>
-        </div>
+        <!-- LEFT: main confirmation content -->
+        <div class="confirm-left" style="padding:.875rem 1.25rem;border-right:1px solid #f0ebff;">
 
-        <!-- Flight Details -->
-        <div class="flight-details">
-            <div class="flex flex-justify-between flex-items-center">
-                <h2 class="h2" style="margin:0;">Flight Details</h2>
-                <div class="flight-status">
-                    Booking Confirmation:
-                    <span class="pending-tag">@b.Status</span>
+            <!-- Pending notice -->
+            <div class="notice notice-warn" role="alert">
+                <span class="notice-icon">⚠️</span>
+                <div>
+                    <h4 class="text-orange">Your flight is pending</h4>
+                    <span>If we can't confirm within 72 hours, we'll email you at <strong>@b.ConfirmationEmail</strong> and issue a full refund.</span>
                 </div>
             </div>
 
-            @* ---- Outbound leg ---- *@
+            <!-- Thank you + ticket ID -->
+            <div>
+                <div class="font-bold text-dark" style="font-size:1.05rem;margin-bottom:.3rem;">
+                    Thanks <strong>@b.Traveler1.FullName</strong> for choosing Foreway!
+                </div>
+                <span class="badge badge-ticket" style="font-size:.75rem;padding:.3rem .85rem;">🅱 Ticket ID: @b.TicketId</span>
+            </div>
+
+            <!-- Free cancellation -->
+            <div class="notice notice-info">
+                <span class="notice-icon">🌟</span>
+                <div>
+                    <h4 class="text-purple">Free 24-Hour Cancellation</h4>
+                    <span>Contact support within 24 hours of booking for a full refund.</span>
+                </div>
+            </div>
+
+            <!-- Flight legs -->
             @if (b.OutboundLeg != null)
             {
-                @await Html.PartialAsync("_FlightLeg", b.OutboundLeg)
+                <div class="leg-card">
+                    <h4>🛫 @b.OutboundLeg.Title — @(b.OutboundLeg.Segments.Count - 1 == 0 ? "Non-Stop" : $"{b.OutboundLeg.Segments.Count-1}-Stop") · @b.OutboundLeg.Duration</h4>
+                    @foreach(var seg in b.OutboundLeg.Segments)
+                    {
+                        <div class="leg-row mb-1">
+                            <div>
+                                <div class="leg-time">@seg.DepartTime</div>
+                                <div class="leg-apt">@seg.DepartAirport</div>
+                            </div>
+                            <div class="leg-arrow">——→</div>
+                            <div class="leg-dur">@seg.FlightDuration<br/><span class="text-xs text-gray">@seg.FlightNumber</span></div>
+                            <div>
+                                <div class="leg-time">@seg.ArriveTime</div>
+                                <div class="leg-apt">@seg.ArriveAirport</div>
+                            </div>
+                        </div>
+                        <div class="leg-meta">@seg.Class · RECORD: PENDING</div>
+                    }
+                    @if (!string.IsNullOrEmpty(b.OutboundLeg.LayoverNote))
+                    {
+                        <div style="background:rgba(109,40,217,.07);border-left:3px solid #7c3aed;padding:.25rem .6rem;border-radius:0 .3rem .3rem 0;font-size:.7rem;color:#4c1d95;font-weight:600;margin-top:.3rem;">@b.OutboundLeg.LayoverNote</div>
+                    }
+                </div>
             }
 
-            @* ---- Return leg ---- *@
             @if (b.ReturnLeg != null)
             {
-                @await Html.PartialAsync("_FlightLeg", b.ReturnLeg)
+                <div class="leg-card">
+                    <h4>🛬 @b.ReturnLeg.Title — @(b.ReturnLeg.Segments.Count - 1 == 0 ? "Non-Stop" : $"{b.ReturnLeg.Segments.Count-1}-Stop") · @b.ReturnLeg.Duration</h4>
+                    @foreach(var seg in b.ReturnLeg.Segments)
+                    {
+                        <div class="leg-row mb-1">
+                            <div><div class="leg-time">@seg.DepartTime</div><div class="leg-apt">@seg.DepartAirport</div></div>
+                            <div class="leg-arrow">——→</div>
+                            <div class="leg-dur">@seg.FlightDuration</div>
+                            <div><div class="leg-time">@seg.ArriveTime</div><div class="leg-apt">@seg.ArriveAirport</div></div>
+                        </div>
+                        <div class="leg-meta">@seg.Class · RECORD: PENDING</div>
+                    }
+                </div>
             }
-        </div>
 
-        <!-- Traveler Info -->
-        <h2 class="h2">Flight &amp; Traveler Information</h2>
-        <p class="text-sm text-gray-600">
-            If you updated your seat selection since booking, that change may not appear here.
-            Contact the airline to confirm.
-        </p>
-
-        <div class="traveler-card">
-            <h3>Traveler #1 – @b.Traveler1.FullName</h3>
-            <table>
-                <tr><td>Gender</td><td>@b.Traveler1.Gender</td></tr>
-                <tr><td>Date of Birth</td><td>@b.Traveler1.DateOfBirth</td></tr>
-                <tr><td>Phone Number</td><td>@b.Traveler1.Phone</td></tr>
-                <tr><td>Email</td><td>@b.Traveler1.Email</td></tr>
-            </table>
-        </div>
-
-        @if (b.Traveler2 != null)
-        {
-            <div class="traveler-card">
-                <h3>Traveler #2 – @b.Traveler2.FullName</h3>
-                <table>
-                    <tr><td>Gender</td><td>@b.Traveler2.Gender</td></tr>
-                    <tr><td>Date of Birth</td><td>@b.Traveler2.DateOfBirth</td></tr>
-                    <tr><td>Phone Number</td><td>@b.Traveler2.Phone</td></tr>
-                    <tr><td>Email</td><td>@b.Traveler2.Email</td></tr>
-                </table>
+            <!-- Passenger Flight Status Pie Chart -->
+            <div class="chart-panel">
+                <h3>📊 Passenger Flight Status Overview</h3>
+                <div class="flex items-center gap-4" style="min-height:160px;">
+                    <div style="width:160px;height:160px;flex-shrink:0;">
+                        <canvas id="passengerChart"
+                                aria-label="Pie chart showing pending vs completed flights"
+                                role="img"></canvas>
+                    </div>
+                    <div style="flex:1;">
+                        <div class="font-semibold text-xs text-purple mb-2" style="text-transform:uppercase;letter-spacing:.05em;">Legend</div>
+                        <div class="flex items-center gap-2 mb-1 text-sm">
+                            <span style="width:12px;height:12px;background:#f59e0b;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+                            Pending Flights — @Model.Booking.PendingCount (@Model.Booking.PendingPct%)</div>
+                        <div class="flex items-center gap-2 mb-1 text-sm">
+                            <span style="width:12px;height:12px;background:#10b981;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+                            Completed Flights — @Model.Booking.CompletedCount (@Model.Booking.CompletedPct%)</div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <span style="width:12px;height:12px;background:#6d28d9;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+                            Cancelled — @Model.Booking.CancelledCount (@Model.Booking.CancelledPct%)</div>
+                        <div class="text-xs text-gray mt-2">Based on @Model.Booking.TotalFlights total bookings across all passengers.</div>
+                    </div>
+                </div>
             </div>
-        }
+        </div>
+
+        <!-- RIGHT: sidebar -->
+        <div class="confirm-right" style="padding:.875rem;">
+
+            <!-- Traveler cards -->
+            <div class="sidebar-card">
+                <h3>Traveler #1</h3>
+                <div class="cost-row"><span class="text-xs text-purple font-semibold">Name</span><span class="text-xs">@b.Traveler1.FullName</span></div>
+                <div class="cost-row"><span class="text-xs text-purple font-semibold">DOB</span><span class="text-xs">@b.Traveler1.DateOfBirth</span></div>
+                <div class="cost-row"><span class="text-xs text-purple font-semibold">Gender</span><span class="text-xs">@b.Traveler1.Gender</span></div>
+                <div class="cost-row"><span class="text-xs text-purple font-semibold">Email</span><span class="text-xs">@b.Traveler1.Email</span></div>
+                <div class="cost-row"><span class="text-xs text-purple font-semibold">Phone</span><span class="text-xs">@b.Traveler1.Phone</span></div>
+            </div>
+
+            @if(b.Traveler2 != null){
+                <div class="sidebar-card">
+                    <h3>Traveler #2</h3>
+                    <div class="cost-row"><span class="text-xs text-purple font-semibold">Name</span><span class="text-xs">@b.Traveler2.FullName</span></div>
+                    <div class="cost-row"><span class="text-xs text-purple font-semibold">DOB</span><span class="text-xs">@b.Traveler2.DateOfBirth</span></div>
+                    <div class="cost-row"><span class="text-xs text-purple font-semibold">Email</span><span class="text-xs">@b.Traveler2.Email</span></div>
+                </div>
+            }
+
+            <!-- Cost -->
+            <div class="sidebar-card">
+                <h3>Cost &amp; Billing</h3>
+                <div class="cost-row"><span class="cost-indent">Fare ×@b.AdultCount</span><span>$@b.FarePerAdult.ToString("N2")</span></div>
+                <div class="cost-row"><span class="cost-indent">Taxes ×@b.AdultCount</span><span>$@b.TaxesPerAdult.ToString("N2")</span></div>
+                <div class="cost-row"><span>Total</span><span>$@b.Total.ToString("N2")</span></div>
+            </div>
+
+            <!-- Policies (compact) -->
+            <div class="sidebar-card">
+                <h3>Policies</h3>
+                <p class="text-xs text-gray" style="line-height:1.55;">Valid photo ID required at check-in. Visa and health documentation are the passenger's responsibility. Information here is provided as a courtesy — verify requirements with the destination country's consul.</p>
+            </div>
+        </div>
     </div>
-
-    <!-- ================================================================
-         SIDEBAR
-         ================================================================ -->
-    <aside class="sidebar lg:w-80">
-
-        <!-- Traveler 1 -->
-        <div class="traveler-sidebar">
-            <h3>Traveler #1 – @b.Traveler1.FullName</h3>
-            <table>
-                <tr><td>Gender</td><td>@b.Traveler1.Gender</td></tr>
-                <tr><td>Date of Birth</td><td>@b.Traveler1.DateOfBirth</td></tr>
-                <tr><td>Phone</td><td>@b.Traveler1.Phone</td></tr>
-                <tr><td>Email</td><td>@b.Traveler1.Email</td></tr>
-            </table>
-            <h3 class="font-semibold text-gray-800" style="margin-top:1.25rem;margin-bottom:0.5rem;">
-                LOYALTY PROGRAM
-            </h3>
-            <p>TSA Known Traveler #:</p>
-            <p>REDRESS NUMBER:</p>
-        </div>
-
-        @if (b.Traveler2 != null)
-        {
-            <div class="traveler-sidebar">
-                <h3>Traveler #2 – @b.Traveler2.FullName</h3>
-                <table>
-                    <tr><td>Gender</td><td>@b.Traveler2.Gender</td></tr>
-                    <tr><td>Date of Birth</td><td>@b.Traveler2.DateOfBirth</td></tr>
-                    <tr><td>Phone</td><td>@b.Traveler2.Phone</td></tr>
-                    <tr><td>Email</td><td>@b.Traveler2.Email</td></tr>
-                </table>
-                <h3 class="font-semibold text-gray-800" style="margin-top:1.25rem;margin-bottom:0.5rem;">
-                    LOYALTY PROGRAM
-                </h3>
-                <p>TSA Known Traveler #:</p>
-                <p>REDRESS NUMBER:</p>
-            </div>
-        }
-
-        <!-- Cost & Billing -->
-        <div class="cost-billing">
-            <h3>Cost &amp; Billing Information</h3>
-            <h4 class="font-medium mb-2" style="color:#4c1d95;">Cost Information</h4>
-            <table>
-                <tr><td>Fare</td><td></td></tr>
-                <tr><td style="padding-left:1.5rem;">Adult × @b.AdultCount</td>
-                    <td style="text-align:right;">$@b.FarePerAdult.ToString("N2")</td></tr>
-                <tr><td>Taxes and Fees</td><td></td></tr>
-                <tr><td style="padding-left:1.5rem;">Adult × @b.AdultCount</td>
-                    <td style="text-align:right;">$@b.TaxesPerAdult.ToString("N2")</td></tr>
-                <tr><td>Total</td>
-                    <td style="text-align:right;">$@b.Total.ToString("N2")</td></tr>
-            </table>
-        </div>
-
-        <!-- Policies -->
-        <div class="policies">
-            <h3>Policies, Rules &amp; Restrictions</h3>
-            <p>
-                The Philippines enforces policies that promote economic growth while protecting
-                national interests. Foreign investment is allowed in many sectors but restricted
-                in areas like land ownership. Anti-corruption, anti-money-laundering, labor, and
-                anti-discrimination regulations protect both commerce and workers.
-            </p>
-            <p style="margin-top:0.75rem;">
-                Airlines require valid photo identification at check-in (driver's license or
-                passport), plus applicable visa and health documents. Information here is
-                provided as a courtesy—verify requirements with the destination country's consul
-                before travel.
-            </p>
-        </div>
-    </aside>
 </div>
+
+@section Scripts {
+<script>
+    // ----------------------------------------------------------------
+    // Passenger Flight Status Pie Chart (Chart.js)
+    // Data is pulled from the Razor model (ConfirmationModel).
+    // In production, wire Model.PendingCount / CompletedCount / CancelledCount
+    // to a real database via Entity Framework (e.g., DbContext.Bookings.Count()).
+    // ----------------------------------------------------------------
+    (function() {
+        var ctx = document.getElementById('passengerChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Pending Flights', 'Completed Flights', 'Cancelled'],
+                datasets: [{
+                    data: [@Model.Booking.PendingCount, @Model.Booking.CompletedCount, @Model.Booking.CancelledCount],
+                    backgroundColor: ['#f59e0b', '#10b981', '#6d28d9'],
+                    borderColor:     ['#d97706', '#059669', '#4c1d95'],
+                    borderWidth: 2,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                var total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                                var pct   = total ? Math.round(ctx.raw/total*100) : 0;
+                                return ' ' + ctx.label + ': ' + ctx.raw + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })();
+</script>
+}

@@ -1,61 +1,81 @@
-# Foreway – ASP.NET Core Razor Pages Application
+# Foreway Enhanced — ASP.NET Core 8 Razor Pages
 
 ## Overview
-Converted from static HTML/CSS to ASP.NET Core 8.0 Razor Pages.
+Fully refactored, no-scroll flight booking application with multi-step booking flow, flight details with seat map, manage bookings, and a Chart.js pie chart on the confirmation page.
 
 ## Pages
-| URL | Source File | Description |
-|-----|------------|-------------|
-| `/` | Index.cshtml | Landing / home page |
-| `/Flights` | Flights.cshtml | Flight search results with interactive map & price chart |
-| `/Confirmation` | Confirmation.cshtml | Booking confirmation page |
-| `/Hotels` | Hotels.cshtml | Stub page |
-| `/Deals` | Deals.cshtml | Stub page |
-| `/About` | About.cshtml | Stub page |
-| `/SignIn` | SignIn.cshtml | Stub page |
 
-## Project Structure
+| URL | Description |
+|-----|-------------|
+| `/`               | Hero home page with 4 main CTA navigation buttons |
+| `/Flights`        | Paginated flight search (5/page) with price heatmap & chart |
+| `/FlightDetails`  | Full flight details with pricing breakdown, amenities, interactive seat map |
+| `/Book/Step1`     | Booking step 1 — Passenger Information |
+| `/Book/Step2`     | Booking step 2 — Extras & Seat Preferences |
+| `/Book/Step3`     | Booking step 3 — Payment & Order Summary |
+| `/Confirmation`   | Booking confirmation + passenger flight status **Pie Chart** |
+| `/Manage`         | Manage/view all bookings with filter, cancel, rebook actions |
+
+## No-Scroll Architecture
+
+Every page uses this viewport-locked flex structure:
+
 ```
-ForewayApp/
-├── ForewayApp.csproj
-├── Program.cs
-├── appsettings.json
-├── Models/
-│   └── FlightModels.cs        # BookingConfirmation, FlightResult, etc.
-├── Pages/
-│   ├── _ViewImports.cshtml
-│   ├── _ViewStart.cshtml
-│   ├── Index.cshtml / .cs
-│   ├── Flights.cshtml / .cs   # Main flight results page
-│   ├── Confirmation.cshtml / .cs
-│   ├── Hotels/Deals/About/SignIn stubs
-│   └── Shared/
-│       ├── _Layout.cshtml     # Shared header, footer, CDN scripts
-│       └── _FlightLeg.cshtml  # Partial: reusable flight leg card
-└── wwwroot/
-    └── css/
-        └── site.css           # Merged & optimized stylesheet
+<body>  ← flex column, height:100%, overflow:hidden
+  <header class="header">   ← flex-shrink:0
+  <main class="page-shell"> ← flex:1, overflow:hidden
+    <div class="page-card">  ← flex column, overflow:hidden
+      <div class="page-title-bar">  ← flex-shrink:0 (never scrolls)
+      <div class="action-bar">      ← flex-shrink:0 (never scrolls)
+      <div class="scroll-zone">     ← flex:1, overflow-y:auto  (only this scrolls)
+  <footer class="footer">   ← flex-shrink:0
 ```
 
-## How to Run
+Long content (flight lists, forms) is paginated or placed in `.scroll-zone`.
+
+## Pie Chart (Confirmation Page)
+
+Located in `Pages/Confirmation.cshtml` and `Pages/Confirmation.cshtml.cs`.
+
+- **Chart.js** (CDN) renders a pie chart with 3 slices:
+  - 🟡 Pending Flights
+  - 🟢 Completed Flights
+  - 🟣 Cancelled
+- Data from `BookingConfirmationEx.PendingCount / CompletedCount / CancelledCount`
+- **To connect to a real DB:** Replace the hardcoded counts in `OnGet()` with Entity Framework queries:
+  ```csharp
+  PendingCount   = await _db.Bookings.CountAsync(b => b.Status == BookingStatus.Pending);
+  CompletedCount = await _db.Bookings.CountAsync(b => b.Status == BookingStatus.Completed);
+  CancelledCount = await _db.Bookings.CountAsync(b => b.Status == BookingStatus.Cancelled);
+  ```
+
+## Running the App
 
 ### Prerequisites
-- .NET 8.0 SDK — https://dotnet.microsoft.com/download
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
 
-### Run
 ```bash
-cd ForewayApp
+cd EnhancedForewayApp
 dotnet run
 ```
-Then open https://localhost:5001 (or http://localhost:5000).
+
+Open https://localhost:5001 or http://localhost:5000.
 
 ### Visual Studio
-Open `ForewayApp.csproj` → F5 to run.
+Open `ForewayApp.csproj` → press F5.
 
-## Key Changes from Static HTML
-1. **CSS Merged** — `styles.css` (two near-identical copies) merged into a single `wwwroot/css/site.css`. Duplicate rules removed, conflicts resolved.
-2. **Shared Layout** — `_Layout.cshtml` provides a consistent header/footer across all pages. CDN links (Leaflet, Chart.js) loaded once.
-3. **Dynamic Data** — Flight results and booking confirmation are driven by C# model classes (`FlightModels.cs`). Replace the sample data in `Flights.cshtml.cs` / `Confirmation.cshtml.cs` with real API calls.
-4. **Local image paths fixed** — Original HTML used absolute Windows paths (`C:\Users\...`). Replace with `/images/airline_logo.png` files placed in `wwwroot/images/`.
-5. **Responsive / No-Overflow** — Layout uses CSS Grid & Flexbox breakpoints; max-width containers prevent horizontal overflow on all viewports.
-6. **Partial View** — `_FlightLeg.cshtml` is a reusable partial for outbound and return flight legs.
+## Key Changes from Previous Version
+
+| Area | Change |
+|------|--------|
+| CSS | Full rewrite to viewport-lock pattern (`html/body overflow:hidden`, flex column) |
+| Scrolling | Only `.scroll-zone` divs scroll; header/title/actions never scroll |
+| Navigation | Full nav in `_Layout.cshtml` + action bars on each page |
+| Index page | Hero with 4 large CTA buttons + stats bar |
+| Flights | Paginated (5/page) with `?page=N` query param |
+| Flight Details | New page with info grid, pricing breakdown, interactive seat map |
+| Book flow | Split into 3 steps: Passenger Info → Extras → Payment |
+| Manage | Booking list with filter, view/rebook/cancel actions |
+| Confirmation | Pie chart (Chart.js) for passenger flight status |
+| Responsive | Media queries for 1920px, 1024px, 768px, 480px, 360px |
+| Accessibility | `aria-label` on all interactive elements |

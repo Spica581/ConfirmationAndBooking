@@ -1,0 +1,65 @@
+@page
+@model ForewayApp.Pages.Book.Step2Model
+@{ ViewData["Title"] = "Book — Extras & Seats"; }
+
+<div class="page-card">
+    <div class="page-title-bar">
+        <div class="flex items-center gap-3">
+            <a href="/Book/Step1" class="btn btn-ghost btn-sm">← Back</a>
+            <h1>Extras &amp; Seats</h1>
+        </div>
+        <span class="text-xs text-gray">Step 2 of 3</span>
+    </div>
+    <div class="step-bar">
+        <div class="step done"><div class="step-num">✓</div>Passenger Info</div>
+        <div class="step-arrow">›</div>
+        <div class="step active"><div class="step-num">2</div>Extras &amp; Seats</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">3</div>Payment</div>
+    </div>
+    <div class="scroll-zone">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-card">
+                <h3>🧳 Baggage</h3>
+                <div class="form-section">
+                    @foreach(var opt in new[]{("1st Bag (23kg)","Included"),("2nd Bag (23kg)","+$75"),("Sports equipment","+$120")}){
+                        <label class="flex items-center gap-2 text-sm" style="cursor:pointer;">
+                            <input type="checkbox" name="bag" value="@opt.Item1" style="accent-color:#6d28d9;" />
+                            <span>@opt.Item1</span>
+                            <span class="text-purple font-semibold" style="margin-left:auto;">@opt.Item2</span>
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-card">
+                <h3>🍽 Meals</h3>
+                <div class="form-section">
+                    @foreach(var m in new[]{"Standard","Vegetarian","Vegan","Gluten-free","Halal","Kosher"}){
+                        <label class="flex items-center gap-2 text-sm" style="cursor:pointer;">
+                            <input type="radio" name="meal" value="@m" style="accent-color:#6d28d9;" />
+                            <span>@m</span>
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-card" style="grid-column:span 2;">
+                <h3>💺 Seat Preference</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+                    @foreach(var t in new[]{("T1 — Traveler 1","t1_seat"),("T2 — Traveler 2","t2_seat")}){
+                        <div>
+                            <div class="label mb-1">@t.Item1</div>
+                            <select name="@t.Item2" class="input" aria-label="Seat for @t.Item1">
+                                <option>Window (A/F)</option><option>Middle (B/E)</option><option>Aisle (C/D)</option>
+                            </select>
+                        </div>
+                    }
+                </div>
+                <div class="text-xs text-gray mt-2">Exact seat assignment on the <a href="/FlightDetails" style="color:#6d28d9;">Flight Details</a> seat map.</div>
+            </div>
+        </div>
+        <div class="flex justify-between items-center mt-3">
+            <a href="/Book/Step1" class="btn btn-ghost">← Passenger Info</a>
+            <a href="/Book/Step3" class="btn btn-primary btn-lg">Continue → Payment</a>
+        </div>
+    </div>
+</div>

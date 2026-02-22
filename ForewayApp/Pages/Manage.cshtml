@@ -1,0 +1,75 @@
+@page
+@model ForewayApp.Pages.ManageModel
+@{ ViewData["Title"] = "Manage Bookings"; }
+
+<div class="page-card">
+    <div class="page-title-bar">
+        <h1>📂 Manage Bookings</h1>
+        <div class="flex gap-2">
+            <a href="/Book/Step1" class="btn btn-primary btn-sm" aria-label="Book a new flight">＋ New Booking</a>
+            <a href="/Flights"    class="btn btn-ghost btn-sm"   aria-label="Search flights">🔍 Search</a>
+        </div>
+    </div>
+
+    <!-- Filter / search bar -->
+    <div class="action-bar">
+        <input type="text" class="input" style="width:220px;" placeholder="Search by name or ID…" aria-label="Search bookings" />
+        <select class="input" style="width:auto;padding:.32rem .65rem;font-size:.78rem;" aria-label="Filter by status">
+            <option>All Statuses</option>
+            <option>Pending</option>
+            <option>Confirmed</option>
+            <option>Cancelled</option>
+        </select>
+        <select class="input" style="width:auto;padding:.32rem .65rem;font-size:.78rem;" aria-label="Sort by">
+            <option>Sort: Date ↓</option>
+            <option>Sort: Price ↓</option>
+            <option>Sort: Status</option>
+        </select>
+    </div>
+
+    <!-- Column headers (sticky, no scroll) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:.75rem;padding:.5rem 1.25rem;background:#f5f3ff;border-bottom:1px solid #ede9fe;flex-shrink:0;">
+        <span class="label" style="margin:0;">Passenger / Route</span>
+        <span class="label" style="margin:0;">Dates</span>
+        <span class="label" style="margin:0;">Status / Ticket</span>
+        <span class="label" style="margin:0;">Total</span>
+        <span class="label" style="margin:0;">Actions</span>
+    </div>
+
+    <!-- Scrollable booking list -->
+    <div class="scroll-zone" style="padding-top:.65rem;">
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+            @foreach(var bk in Model.Bookings)
+            {
+                <div class="booking-row" role="row" aria-label="Booking for @bk.PassengerName">
+                    <div>
+                        <div class="font-semibold text-dark text-sm">@bk.PassengerName</div>
+                        <div class="text-xs text-gray">@bk.Route</div>
+                    </div>
+                    <div>
+                        <div class="text-sm">@bk.DepartDate</div>
+                        <div class="text-xs text-gray">Return: @bk.ReturnDate</div>
+                    </div>
+                    <div>
+                        <span class="badge @bk.StatusCss">@bk.Status</span>
+                        <div class="text-xs text-gray mt-1">@bk.TicketId</div>
+                    </div>
+                    <div class="font-bold text-purple text-sm">$@bk.Total.ToString("N0")</div>
+                    <div class="flex gap-2" style="flex-wrap:wrap;">
+                        <a href="/Confirmation?ticketId=@bk.TicketId" class="btn btn-ghost btn-sm" aria-label="View confirmation for @bk.TicketId">View</a>
+                        <a href="/Book/Step1"                          class="btn btn-primary btn-sm" aria-label="Rebook flight">Rebook</a>
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Cancel booking @bk.TicketId?')" aria-label="Cancel booking @bk.TicketId">Cancel</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center gap-2" style="margin-top:.75rem;">
+            <a href="#" class="page-btn disabled">‹</a>
+            <a href="#" class="page-btn active">1</a>
+            <a href="#" class="page-btn">2</a>
+            <a href="#" class="page-btn">›</a>
+        </div>
+    </div>
+</div>

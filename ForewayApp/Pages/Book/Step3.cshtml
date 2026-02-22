@@ -1,0 +1,72 @@
+@page
+@model ForewayApp.Pages.Book.Step3Model
+@{ ViewData["Title"] = "Book — Payment"; }
+
+<div class="page-card">
+    <div class="page-title-bar">
+        <div class="flex items-center gap-3">
+            <a href="/Book/Step2" class="btn btn-ghost btn-sm">← Back</a>
+            <h1>Payment</h1>
+        </div>
+        <span class="text-xs text-gray">Step 3 of 3</span>
+    </div>
+    <div class="step-bar">
+        <div class="step done"><div class="step-num">✓</div>Passenger Info</div>
+        <div class="step-arrow">›</div>
+        <div class="step done"><div class="step-num">✓</div>Extras &amp; Seats</div>
+        <div class="step-arrow">›</div>
+        <div class="step active"><div class="step-num">3</div>Payment</div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 280px;gap:0;overflow:hidden;min-height:0;">
+        <div class="scroll-zone" style="border-right:1px solid #f0ebff;">
+            <form method="post" class="form-section">
+                @Html.AntiForgeryToken()
+                <div class="form-card">
+                    <h3>💳 Card Details</h3>
+                    <div class="form-section">
+                        <div><label class="label">Cardholder Name</label><input name="card_name" class="input" placeholder="Jane Doe" required /></div>
+                        <div><label class="label">Card Number</label><input name="card_num" class="input" placeholder="•••• •••• •••• ••••" maxlength="19" required /></div>
+                        <div class="form-row">
+                            <div><label class="label">Expiry (MM/YY)</label><input name="card_exp" class="input" placeholder="12/28" required /></div>
+                            <div><label class="label">CVV</label><input name="card_cvv" class="input" placeholder="•••" maxlength="4" required /></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-card">
+                    <h3>🏠 Billing Address</h3>
+                    <div class="form-section">
+                        <div><label class="label">Street</label><input name="addr_street" class="input" placeholder="123 Main St" /></div>
+                        <div class="form-row">
+                            <div><label class="label">City</label><input name="addr_city" class="input" placeholder="San Francisco" /></div>
+                            <div><label class="label">ZIP</label><input name="addr_zip" class="input" placeholder="94102" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div><label class="label">State</label><input name="addr_state" class="input" placeholder="CA" /></div>
+                            <div><label class="label">Country</label><input name="addr_country" class="input" placeholder="USA" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <a href="/Book/Step2" class="btn btn-ghost">← Extras</a>
+                    <a href="/Confirmation" class="btn btn-success btn-lg">✅ Confirm &amp; Pay — $1,248</a>
+                </div>
+            </form>
+        </div>
+        <!-- Order summary -->
+        <div style="padding:.875rem;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#a78bfa #f1f5f9;background:#faf8ff;">
+            <div class="font-semibold text-xs text-purple mb-2" style="text-transform:uppercase;letter-spacing:.05em;">Order Summary</div>
+            <div class="sidebar-card">
+                <div class="cost-row"><span>SFO → NRT (2 Adults)</span><span></span></div>
+                <div class="cost-row cost-indent"><span>Base fare ×2</span><span>$960.00</span></div>
+                <div class="cost-row cost-indent"><span>Taxes ×2</span><span>$240.00</span></div>
+                <div class="cost-row cost-indent"><span>2nd bag (T1)</span><span>$48.00</span></div>
+                <div class="cost-row"><span>Total</span><span>$1,248.00</span></div>
+            </div>
+            <div class="text-xs text-gray mt-3" style="line-height:1.5;">
+                🔒 Payments secured with 256-bit SSL encryption.<br/><br/>
+                ✅ Free 24-hour cancellation after booking.<br/><br/>
+                📧 Confirmation emailed within 30 minutes.
+            </div>
+        </div>
+    </div>
+</div>

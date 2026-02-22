@@ -1,186 +1,162 @@
 @page
 @model ForewayApp.Pages.FlightsModel
 @{
-    ViewData["Title"] = "Flight Results";
+    ViewData["Title"] = "Search Flights";
 }
 
-<section class="section container">
-    <h1 class="h1 mb-8">Your Flight Journey</h1>
+<div class="page-card">
 
-    <!-- Interactive Map: SFO → NRT -->
-    <div id="map" class="mb-8"></div>
+    <!-- Title Bar -->
+    <div class="page-title-bar">
+        <h1>✈ Search Flights</h1>
+        <div class="flex gap-2">
+            <a href="/FlightDetails" class="btn btn-outline btn-sm" aria-label="View flight details">📋 View Details</a>
+            <a href="/Book/Step1"    class="btn btn-success btn-sm"  aria-label="Book a flight">🎫 Book Now</a>
+        </div>
+    </div>
 
-    <!-- Search Card -->
-    <div class="search-card mb-8">
-        <form method="get" class="form-grid form-grid-5">
-            <div>
-                <label class="label">From</label>
-                <input type="text" name="From" value="@Model.Search.From" class="input" />
-            </div>
-            <div>
-                <label class="label">To</label>
-                <input type="text" name="To" value="@Model.Search.To" class="input" />
-            </div>
-            <div>
-                <label class="label">Depart</label>
-                <input type="date" name="Depart" value="@Model.Search.Depart.ToString("yyyy-MM-dd")" class="input" />
-            </div>
-            <div>
-                <label class="label">Return</label>
-                <input type="date" name="Return" value="@Model.Search.Return.ToString("yyyy-MM-dd")" class="input" />
-            </div>
-            <div>
-                <label class="label">Passengers</label>
-                <div class="flex space-x-4">
-                    <select name="Adults" class="input" style="width:50%;">
-                        @for (int i = 1; i <= 9; i++)
-                        {
-                            <option value="@i" selected="@(Model.Search.Adults == i ? "selected" : null)">
-                                @i Adult@(i > 1 ? "s" : "")
-                            </option>
-                        }
-                    </select>
-                    <select name="Children" class="input" style="width:50%;">
-                        @for (int i = 0; i <= 9; i++)
-                        {
-                            <option value="@i" selected="@(Model.Search.Children == i ? "selected" : null)">
-                                @i Child@(i != 1 ? "ren" : "")
-                            </option>
-                        }
-                    </select>
+    <!-- Search Card (never scrolls) -->
+    <div style="padding:0.75rem 1.5rem; flex-shrink:0; border-bottom:1px solid #f0ebff;">
+        <div class="search-card">
+            <form method="get" class="form-grid-5">
+                <div>
+                    <label class="label">From</label>
+                    <input type="text" name="From" value="@Model.Search.From" class="input" aria-label="Departure airport" />
                 </div>
-            </div>
-            <div class="flex flex-items-end">
-                <button type="submit" class="btn-primary btn-full">Search</button>
-            </div>
-        </form>
+                <div>
+                    <label class="label">To</label>
+                    <input type="text" name="To" value="@Model.Search.To" class="input" aria-label="Destination airport" />
+                </div>
+                <div>
+                    <label class="label">Depart</label>
+                    <input type="date" name="Depart" value="@Model.Search.Depart.ToString("yyyy-MM-dd")" class="input" />
+                </div>
+                <div>
+                    <label class="label">Return</label>
+                    <input type="date" name="Return" value="@Model.Search.Return.ToString("yyyy-MM-dd")" class="input" />
+                </div>
+                <div>
+                    <label class="label">Passengers</label>
+                    <div class="flex gap-2">
+                        <select name="Adults" class="input" style="width:50%;" aria-label="Number of adults">
+                            @for(int i=1;i<=9;i++){<option value="@i" selected="@(Model.Search.Adults==i?"selected":null)">@i Adult@(i>1?"s":"")</option>}
+                        </select>
+                        <select name="Children" class="input" style="width:50%;" aria-label="Number of children">
+                            @for(int i=0;i<=9;i++){<option value="@i" selected="@(Model.Search.Children==i?"selected":null)">@i Child@(i!=1?"ren":"")</option>}
+                        </select>
+                    </div>
+                </div>
+                <div><button type="submit" class="btn btn-primary btn-full">Search</button></div>
+            </form>
+        </div>
     </div>
 
-    <!-- Filters -->
-    <div class="flex space-x-4 mb-8 flex-wrap">
-        <select class="input"><option>Max price</option><option>Under $700</option><option>Under $1000</option></select>
-        <select class="input"><option>Stops</option><option>Non-stop</option><option>1 stop</option></select>
-        <select class="input"><option>Times</option><option>Morning</option><option>Evening</option></select>
-        <select class="input"><option>Airlines</option><option>Hawaiian Airlines</option><option>Japan Airlines</option></select>
-        <select class="input"><option>Seat class</option><option>Economy</option><option>Business</option></select>
+    <!-- Filters strip -->
+    <div class="action-bar">
+        <span class="text-xs text-gray" style="margin-right:.25rem;">Filter:</span>
+        <select class="input" style="width:auto;padding:.3rem .6rem;font-size:.75rem;" aria-label="Filter by max price"><option>Max Price</option><option>Under $700</option><option>Under $1000</option></select>
+        <select class="input" style="width:auto;padding:.3rem .6rem;font-size:.75rem;" aria-label="Filter by stops"><option>Stops</option><option>Non-stop</option><option>1 stop</option></select>
+        <select class="input" style="width:auto;padding:.3rem .6rem;font-size:.75rem;" aria-label="Filter by airline"><option>Airline</option><option>Hawaiian</option><option>JAL</option></select>
+        <select class="input" style="width:auto;padding:.3rem .6rem;font-size:.75rem;" aria-label="Filter by seat class"><option>Class</option><option>Economy</option><option>Business</option></select>
     </div>
 
-    <div class="grid grid-md-3 grid-gap-8">
-        <!-- Flight List -->
-        <div class="md-col-span-2 space-y-6">
-            <h2 class="h2">Available Flights</h2>
+    <!-- Main two-column area (scrollable) -->
+    <div style="flex:1;display:grid;grid-template-columns:1fr 220px;gap:0;min-height:0;overflow:hidden;">
 
-            @foreach (var flight in Model.Flights)
-            {
-                <details class="card">
-                    <summary class="flex flex-justify-between flex-items-center font-bold cursor-pointer p-6">
-                        <div class="flex flex-items-center space-x-4">
-                            <!-- Airline icon placeholder (replace with real logos in wwwroot/images) -->
-                            <div style="width:50px;height:50px;background:linear-gradient(135deg,#6d28d9,#7c3aed);
-                                        border-radius:8px;display:flex;align-items:center;justify-content:center;
-                                        color:#fff;font-weight:700;font-size:0.7rem;text-align:center;padding:2px;">
-                                @flight.AirlineCode
-                            </div>
+        <!-- Flight list column -->
+        <div style="display:flex;flex-direction:column;min-height:0;border-right:1px solid #f0ebff;">
+            <div class="scroll-zone" style="padding-bottom:.5rem;">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-dark">@Model.Flights.Count results</span>
+                    <span class="text-xs text-gray">SFO → NRT · Round trip</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:.5rem;">
+                    @foreach (var f in Model.PagedFlights)
+                    {
+                        <div class="flight-card-result" role="article" aria-label="@f.Airline flight option">
+                            <div class="airline-badge" aria-hidden="true">@f.AirlineCode</div>
                             <div>
-                                @flight.Airline &bull; @flight.Duration &bull;
-                                <strong>$@flight.Price.ToString("N0")</strong>
+                                <div class="flex items-center gap-2">
+                                    <span class="route-time">@f.DepartTime</span>
+                                    <span class="route-arrow">→</span>
+                                    <span class="route-time">@f.ArriveTime</span>
+                                    <span class="text-xs text-gray" style="margin-left:.25rem;">@f.Duration</span>
+                                </div>
+                                <div class="route-meta">@f.Airline · @f.Stops stop@(f.Stops!=1?"s":"") (@f.StopDetail)</div>
+                            </div>
+                            <div class="flight-action">
+                                <div class="flight-price">$@f.Price.ToString("N0")</div>
+                                <a href="/FlightDetails?airline=@Uri.EscapeDataString(f.Airline)&price=@f.Price"
+                                   class="btn btn-outline btn-sm" aria-label="View details for @f.Airline">Details</a>
+                                <a href="/Book/Step1"
+                                   class="btn btn-primary btn-sm" aria-label="Select @f.Airline flight">Select</a>
                             </div>
                         </div>
-                    </summary>
-                    <div class="p-6 pt-0">
-                        <p>@flight.DepartTime – @flight.ArriveTime &bull; @flight.Stops stop@(flight.Stops != 1 ? "s" : "") (@flight.StopDetail)</p>
-                        <a href="/Confirmation" class="btn-primary mt-4 inline-block">Select Seats</a>
-                    </div>
-                </details>
-            }
-
-            <button class="btn-primary btn-full mt-4">Show More Flights</button>
-        </div>
-
-        <!-- Buy Soon Sidebar -->
-        <div class="buy-soon">
-            <h3 class="h3 text-green-600">Buy Soon Alert</h3>
-            <p class="p-gray">We recommend booking soon. Prices may rise 18% in the next two weeks.</p>
-            <p class="p-gray mt-2">Foreway analyzes real-time trends for the best deals.</p>
-        </div>
-    </div>
-
-    <!-- Price Insights -->
-    <h2 class="h2 mt-8">Price Insights</h2>
-    <div class="grid grid-md-2 grid-gap-8">
-
-        <!-- Flexible Dates Heatmap -->
-        <div>
-            <h3 class="h3 mb-4">Flexible Dates Grid</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        @foreach (var dep in Model.HeatmapDepartures)
-                        {
-                            <th>@dep</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var row in Model.HeatmapRows)
-                    {
-                        <tr>
-                            <td><strong>@row.ReturnDate</strong></td>
-                            @foreach (var cell in row.Cells)
-                            {
-                                <td class="@cell.CssClass">$@cell.Price.ToString("N0")</td>
-                            }
-                        </tr>
                     }
-                </tbody>
-            </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" aria-label="Flight results pagination">
+                    <a href="?page=@(Model.CurrentPage-1)" class="page-btn @(Model.CurrentPage<=1?"disabled":"")" aria-label="Previous page">‹</a>
+                    @for(int p=1;p<=Model.TotalPages;p++){
+                        <a href="?page=@p" class="page-btn @(p==Model.CurrentPage?"active":"")" aria-label="Page @p">@p</a>
+                    }
+                    <a href="?page=@(Model.CurrentPage+1)" class="page-btn @(Model.CurrentPage>=Model.TotalPages?"disabled":"")" aria-label="Next page">›</a>
+                </div>
+            </div>
         </div>
 
-        <!-- Price History Chart -->
-        <div>
-            <h3 class="h3 mb-4">Price History</h3>
-            <canvas id="priceChart" height="200"></canvas>
+        <!-- Right panel -->
+        <div style="display:flex;flex-direction:column;gap:.75rem;padding:.875rem;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#a78bfa #f1f5f9;">
+
+            <!-- Buy soon -->
+            <div class="buy-soon" role="complementary" aria-label="Pricing alert">
+                <h3>⚡ Buy Soon</h3>
+                <p class="text-xs text-gray mb-2">Prices may rise <strong>18%</strong> in the next 2 weeks.</p>
+                <a href="/Book/Step1" class="btn btn-success btn-full btn-sm">Book Now</a>
+            </div>
+
+            <!-- Price heatmap -->
+            <div style="background:#fff;border:1px solid #e8e0fa;border-radius:.75rem;padding:.75rem;">
+                <div class="font-semibold text-xs text-purple mb-2" style="text-transform:uppercase;letter-spacing:.05em;">Flexible Dates</div>
+                <table class="heatmap-table" aria-label="Price grid for flexible dates">
+                    <thead>
+                        <tr><th></th>
+                            @foreach(var d in Model.HeatmapDepartures){<th>@d</th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var row in Model.HeatmapRows){
+                            <tr><td><strong>@row.ReturnDate</strong></td>
+                                @foreach(var c in row.Cells){<td class="@c.CssClass">$@c.Price.ToString("N0")</td>}
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Price chart (compact) -->
+            <div style="background:#fff;border:1px solid #e8e0fa;border-radius:.75rem;padding:.75rem;">
+                <div class="font-semibold text-xs text-purple mb-2" style="text-transform:uppercase;letter-spacing:.05em;">Price History</div>
+                <canvas id="priceChart" aria-label="Price history chart" role="img"></canvas>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
 @section Scripts {
 <script>
-    // --- Leaflet Map -------------------------------------------------------
-    (function() {
-        const map = L.map('map').setView([37.6213, -122.3790], 3);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        L.marker([37.6213, -122.3790]).addTo(map).bindPopup('SFO – San Francisco');
-        L.marker([35.7647,  140.3864]).addTo(map).bindPopup('NRT – Tokyo Narita');
-        L.polyline([[37.6213, -122.3790], [35.7647, 140.3864]],
-                   {color: '#7c3aed', weight: 3, dashArray: '8,6'}).addTo(map);
-    })();
-
-    // --- Price History Chart -----------------------------------------------
     new Chart(document.getElementById('priceChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Avg. Price (USD)',
-                data: [1000, 920, 850, 760, 710, 680],
-                borderColor: '#7c3aed',
-                backgroundColor: 'rgba(124,58,237,0.08)',
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#7c3aed'
-            }]
+        type:'line',
+        data:{
+            labels:['Jan','Feb','Mar','Apr','May','Jun'],
+            datasets:[{label:'Avg Price',data:[1000,920,850,760,710,680],
+                borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.08)',
+                tension:.4,fill:true,pointBackgroundColor:'#7c3aed',pointRadius:3}]
         },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: true } },
-            scales: {
-                y: { beginAtZero: false, ticks: { callback: v => '$' + v } }
-            }
-        }
+        options:{responsive:true,plugins:{legend:{display:false}},
+                 scales:{y:{ticks:{callback:v=>'$'+v,font:{size:9}},grid:{color:'#f0ebff'}},
+                         x:{ticks:{font:{size:9}},grid:{display:false}}}}
     });
 </script>
 }

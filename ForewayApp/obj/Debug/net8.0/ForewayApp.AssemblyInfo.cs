@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ForewayApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97c02ca41debfbe6ed80916210094330d3693edd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+752fc26469b000400f120810a79079d650be92c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("ForewayApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ForewayApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

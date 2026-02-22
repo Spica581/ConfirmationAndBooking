@@ -1,0 +1,95 @@
+@page
+@model ForewayApp.Pages.Book.Step1Model
+@{
+    ViewData["Title"] = "Book — Passenger Info";
+}
+
+<div class="page-card">
+    <div class="page-title-bar">
+        <div class="flex items-center gap-3">
+            <a href="/Flights" class="btn btn-ghost btn-sm">← Search</a>
+            <h1>Book Your Flight</h1>
+        </div>
+        <span class="text-xs text-gray">Step 1 of 3</span>
+    </div>
+
+    <!-- Step wizard -->
+    <div class="step-bar">
+        <div class="step active"><div class="step-num">1</div>Passenger Info</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">2</div>Extras &amp; Seats</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">3</div>Payment</div>
+    </div>
+
+    <!-- Flight summary strip -->
+    <div style="padding:.5rem 1.5rem;background:#faf8ff;border-bottom:1px solid #f0ebff;flex-shrink:0;" class="flex items-center gap-4 justify-between">
+        <div class="text-xs text-gray"><strong class="text-dark">SFO → NRT</strong> · Jun 5 – Jun 12, 2024 · 2 Adults · Economy</div>
+        <div class="text-purple font-bold">$1,248 est. total</div>
+    </div>
+
+    <div class="scroll-zone">
+        <form method="post" class="form-section">
+            @Html.AntiForgeryToken()
+
+            <!-- Traveler 1 -->
+            <div class="form-card">
+                <h3>👤 Traveler 1 (Adult)</h3>
+                <div class="form-row form-row-3 mb-2">
+                    <div><label class="label">First Name</label><input name="t1_first" class="input" placeholder="Jane" required aria-label="First name traveler 1" /></div>
+                    <div><label class="label">Middle Name</label><input name="t1_middle" class="input" placeholder="(optional)" aria-label="Middle name traveler 1" /></div>
+                    <div><label class="label">Last Name</label><input name="t1_last" class="input" placeholder="Doe" required aria-label="Last name traveler 1" /></div>
+                </div>
+                <div class="form-row">
+                    <div><label class="label">Date of Birth</label><input type="date" name="t1_dob" class="input" required aria-label="Date of birth traveler 1" /></div>
+                    <div><label class="label">Gender</label>
+                        <select name="t1_gender" class="input" aria-label="Gender traveler 1">
+                            <option>Select…</option><option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div><label class="label">Nationality</label><input name="t1_nat" class="input" placeholder="e.g. American" aria-label="Nationality traveler 1" /></div>
+                    <div><label class="label">Passport / ID #</label><input name="t1_passport" class="input" placeholder="AB1234567" aria-label="Passport number traveler 1" /></div>
+                    <div><label class="label">Expiry Date</label><input type="date" name="t1_exp" class="input" aria-label="Passport expiry traveler 1" /></div>
+                    <div><label class="label">Email</label><input type="email" name="t1_email" class="input" placeholder="jane@example.com" required aria-label="Email traveler 1" /></div>
+                </div>
+            </div>
+
+            <!-- Traveler 2 -->
+            <div class="form-card">
+                <h3>👤 Traveler 2 (Adult)</h3>
+                <div class="form-row form-row-3 mb-2">
+                    <div><label class="label">First Name</label><input name="t2_first" class="input" placeholder="John" required aria-label="First name traveler 2" /></div>
+                    <div><label class="label">Middle Name</label><input name="t2_middle" class="input" placeholder="(optional)" aria-label="Middle name traveler 2" /></div>
+                    <div><label class="label">Last Name</label><input name="t2_last" class="input" placeholder="Doe" required aria-label="Last name traveler 2" /></div>
+                </div>
+                <div class="form-row">
+                    <div><label class="label">Date of Birth</label><input type="date" name="t2_dob" class="input" required aria-label="Date of birth traveler 2" /></div>
+                    <div><label class="label">Gender</label>
+                        <select name="t2_gender" class="input" aria-label="Gender traveler 2">
+                            <option>Select…</option><option>Male</option><option>Female</option><option>Non-binary</option>
+                        </select>
+                    </div>
+                    <div><label class="label">Nationality</label><input name="t2_nat" class="input" placeholder="e.g. American" aria-label="Nationality traveler 2" /></div>
+                    <div><label class="label">Passport / ID #</label><input name="t2_passport" class="input" placeholder="CD9876543" aria-label="Passport number traveler 2" /></div>
+                    <div><label class="label">Expiry Date</label><input type="date" name="t2_exp" class="input" aria-label="Passport expiry traveler 2" /></div>
+                    <div><label class="label">Phone</label><input type="tel" name="t2_phone" class="input" placeholder="+1 555 0100" aria-label="Phone traveler 2" /></div>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="form-card">
+                <h3>📧 Contact Information</h3>
+                <div class="form-row">
+                    <div><label class="label">Contact Email</label><input type="email" name="contact_email" class="input" placeholder="Confirmations sent here" required aria-label="Contact email" /></div>
+                    <div><label class="label">Phone Number</label><input type="tel" name="contact_phone" class="input" placeholder="+1 555 0100" aria-label="Contact phone" /></div>
+                </div>
+            </div>
+
+            <!-- Footer actions -->
+            <div class="flex justify-between items-center" style="padding-bottom:.25rem;">
+                <a href="/Flights" class="btn btn-ghost" aria-label="Go back to search">← Back to Search</a>
+                <a href="/Book/Step2" class="btn btn-primary btn-lg" aria-label="Continue to extras">Continue → Extras &amp; Seats</a>
+            </div>
+        </form>
+    </div>
+</div>

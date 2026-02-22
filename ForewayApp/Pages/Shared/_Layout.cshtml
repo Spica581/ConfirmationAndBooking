@@ -3,45 +3,36 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Foreway</title>
-
-    <!-- Leaflet CSS (used on Flight Results page) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-    <!-- Site CSS -->
+    <title>@ViewData["Title"] — Foreway</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
 
-    <!-- Shared Header / Navbar -->
-    <header class="header">
-        <div class="container header-inner">
-            <a href="/" class="logo">Foreway</a>
-            <nav class="nav">
-                <a href="/Flights" class="nav-link">Flights</a>
-                <a href="/Hotels" class="nav-link">Hotels</a>
-                <a href="/Deals" class="nav-link">Deals</a>
-                <a href="/About" class="nav-link">About</a>
-                <a href="/SignIn" class="btn-secondary">Sign In</a>
-            </nav>
-        </div>
-    </header>
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">✈ Foreway</a>
+        <nav class="nav">
+            <a href="/Flights"       class="nav-link">Flights</a>
+            <a href="/FlightDetails" class="nav-link">Details</a>
+            <a href="/Book/Step1"    class="nav-link">Book</a>
+            <a href="/Manage"        class="nav-link">Manage</a>
+            <a href="/Confirmation"  class="nav-link">Confirmation</a>
+            <a href="/SignIn"        class="nav-btn-sm" aria-label="Sign In">Sign In</a>
+        </nav>
+    </div>
+</header>
 
-    <!-- Page Content -->
+<main class="page-shell">
     @RenderBody()
+</main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 Foreway. All rights reserved.</p>
-        </div>
-    </footer>
+<footer class="footer">
+    <span>&copy; 2026 Foreway — Fly smarter, anywhere.</span>
+</footer>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

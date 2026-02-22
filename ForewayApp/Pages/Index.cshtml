@@ -1,15 +1,26 @@
 @page
-@model IndexModel
+@model ForewayApp.Pages.IndexModel
 @{
     ViewData["Title"] = "Home";
 }
 
-<section class="section container" style="text-align:center; padding-top:4rem; padding-bottom:4rem;">
-    <h1 class="h1">Welcome to Foreway</h1>
-    <p class="p-gray" style="font-size:1.1rem; margin-bottom:2rem;">
-        Find the best flights, compare prices, and book with confidence.
-    </p>
-    <a href="/Flights" class="btn-primary" style="font-size:1rem; padding:0.85rem 2.5rem;">
-        Search Flights
-    </a>
-</section>
+<div class="page-card">
+    <div class="hero">
+        <h1>Find Your Perfect Flight</h1>
+        <p>Compare hundreds of airlines, track prices in real-time, and book with full confidence — all in one place.</p>
+
+        <div class="hero-btns">
+            <a href="/Flights"       class="btn btn-primary btn-lg"  aria-label="Search available flights">🔍 Search Flights</a>
+            <a href="/FlightDetails" class="btn btn-outline btn-lg"  aria-label="View flight details">📋 Flight Details</a>
+            <a href="/Book/Step1"    class="btn btn-success btn-lg"  aria-label="Book a flight">🎫 Book a Flight</a>
+            <a href="/Manage"        class="btn btn-ghost btn-lg"    aria-label="Manage your bookings">📂 Manage Bookings</a>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat"><div class="stat-num">500+</div><div class="stat-lbl">Airlines</div></div>
+            <div class="stat"><div class="stat-num">190+</div><div class="stat-lbl">Countries</div></div>
+            <div class="stat"><div class="stat-num">$12M</div><div class="stat-lbl">Saved for Travelers</div></div>
+            <div class="stat"><div class="stat-num">4.9★</div><div class="stat-lbl">User Rating</div></div>
+        </div>
+    </div>
+</div>

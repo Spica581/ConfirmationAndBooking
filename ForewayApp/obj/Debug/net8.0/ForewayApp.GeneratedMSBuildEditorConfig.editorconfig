@@ -26,6 +26,18 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWJvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Book/Step1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va1xTdGVwMS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Book/Step2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va1xTdGVwMi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Book/Step3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va1xTdGVwMy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Confirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlybWF0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -38,6 +50,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/FlightDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmxpZ2h0RGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Flights.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmxpZ2h0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -48,6 +64,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Manage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/sebas/OneDrive/Documents/GitHub/ConfirmationAndBooking/ForewayApp/Pages/Shared/_FlightLeg.cshtml]
